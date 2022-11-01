@@ -92,10 +92,8 @@ function buildEventPattern() {
             }
         }
         catch (e) {
-            core.debug(JSON.stringify(eventPattern));
             core.setFailed(e.message);
         }
-        core.debug(JSON.stringify(eventPattern));
         return eventPattern;
     });
 }
@@ -147,7 +145,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         core.info('running');
         try {
-            const eventPattern = buildEventPattern();
+            const eventPattern = yield buildEventPattern();
             core.info(JSON.stringify(eventPattern));
             yield putRule(JSON.stringify(eventPattern));
         }
