@@ -95,7 +95,7 @@ async function putRule(eventPattern: string) {
         const command = new PutRuleCommand({
             Name: name,
             Description: decsription,
-            EventBusName: eventBus,
+            EventBusName: eventBus === '' ? 'default' : eventBus,
             EventPattern: eventPattern
         });
         const res = await client.send(command);
@@ -106,7 +106,6 @@ async function putRule(eventPattern: string) {
 }
 
 async function run() {
-    core.info('running')
     try {
         const eventPattern = await buildEventPattern();
         await putRule(JSON.stringify(eventPattern));

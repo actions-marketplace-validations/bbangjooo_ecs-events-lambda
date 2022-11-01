@@ -128,7 +128,7 @@ function putRule(eventPattern) {
             const command = new client_eventbridge_1.PutRuleCommand({
                 Name: name,
                 Description: decsription,
-                EventBusName: eventBus,
+                EventBusName: eventBus === '' ? 'default' : eventBus,
                 EventPattern: eventPattern
             });
             const res = yield client.send(command);
@@ -141,7 +141,6 @@ function putRule(eventPattern) {
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info('running');
         try {
             const eventPattern = yield buildEventPattern();
             yield putRule(JSON.stringify(eventPattern));
