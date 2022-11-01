@@ -59,9 +59,9 @@ async function buildEventPattern() {
                 break;
         }
     } catch(e) {
+        core.info(JSON.stringify(eventPattern));
         core.setFailed(e.message);
     }
-    core.info(JSON.stringify(eventPattern));
     return eventPattern;
 
 }
@@ -103,13 +103,12 @@ async function putRule(eventPattern: string) {
 }
 
 async function run() {
-    core.info('hi');
     
     try {
         const eventPattern = buildEventPattern();
-        console.log(eventPattern);
         await putRule(JSON.stringify(eventPattern));
     } catch(e) {
+        core.info('hi');
         core.setFailed(e.message);
     }
 }
