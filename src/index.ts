@@ -24,7 +24,7 @@ async function buildEventPattern() {
     let eventPattern: TeventPattern = {
         source: ["aws.ecs"]
     };
-    core.debug(JSON.stringify(eventPattern));
+    core.info(JSON.stringify(eventPattern));
     try {
         switch(eventType) {
             case 'STATE_CHANGE':

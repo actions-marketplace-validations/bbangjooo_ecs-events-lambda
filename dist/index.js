@@ -55,7 +55,7 @@ function buildEventPattern() {
         let eventPattern = {
             source: ["aws.ecs"]
         };
-        core.debug(JSON.stringify(eventPattern));
+        core.info(JSON.stringify(eventPattern));
         try {
             switch (eventType) {
                 case 'STATE_CHANGE':
