@@ -59,7 +59,7 @@ async function buildEventPattern() {
                 break;
         }
     } catch(e) {
-        core.info(JSON.stringify(eventPattern));
+        core.debug(JSON.stringify(eventPattern));
         core.setFailed(e.message);
     }
     return eventPattern;
@@ -89,17 +89,21 @@ async function putRule(eventPattern: string) {
     const name = 'test-rule-2' ?? core.getInput('name');
     const decsription = 'test-rule-2' ?? core.getInput('decsription');
     const eventBus = 'default' ?? core.getInput('event-bus');
-    const client = new EventBridgeClient({
-        region: REGION
-    });
-
-    const command = new PutRuleCommand({
-        Name: name,
-        Description: decsription,
-        EventBusName: eventBus,
-        EventPattern: eventPattern
-    });
-    const res = await client.send(command);
+    try {
+        const client = new EventBridgeClient({
+            region: REGION
+        });
+    
+        const command = new PutRuleCommand({
+            Name: name,
+            Description: decsription,
+            EventBusName: eventBus,
+            EventPattern: eventPattern
+        });
+        const res = await client.send(command);
+    } catch(e) {
+        core.setFailed(e.message);
+    }
 }
 
 async function run() {
@@ -108,7 +112,7 @@ async function run() {
         const eventPattern = buildEventPattern();
         await putRule(JSON.stringify(eventPattern));
     } catch(e) {
-        core.info('hi');
+        core.debug('hi');
         core.setFailed(e.message);
     }
 }
