@@ -118,9 +118,9 @@ function getClusterArns(clusters) {
 }
 function putRule(eventPattern) {
     return __awaiter(this, void 0, void 0, function* () {
-        const name =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('name');
-        const decsription =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('decsription');
-        const eventBus =  true && 'default' !== void 0 ? 'default' : core.getInput('event-bus');
+        const name = core.getInput('name');
+        const decsription = core.getInput('decsription');
+        const eventBus = core.getInput('event-bus');
         try {
             const client = new client_eventbridge_1.EventBridgeClient({
                 region: REGION

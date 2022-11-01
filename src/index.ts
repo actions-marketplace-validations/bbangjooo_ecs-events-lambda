@@ -84,9 +84,9 @@ async function getClusterArns(clusters: string[]): Promise<(string | undefined)[
 }
 
 async function putRule(eventPattern: string) {
-    const name = 'test-rule-2' ?? core.getInput('name');
-    const decsription = 'test-rule-2' ?? core.getInput('decsription');
-    const eventBus = 'default' ?? core.getInput('event-bus');
+    const name = core.getInput('name');
+    const decsription = core.getInput('decsription');
+    const eventBus = core.getInput('event-bus');
     try {
         const client = new EventBridgeClient({
             region: REGION
