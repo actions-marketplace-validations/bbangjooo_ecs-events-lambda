@@ -24,6 +24,7 @@ async function buildEventPattern() {
     let eventPattern: TeventPattern = {
         source: ["aws.ecs"]
     };
+    core.debug(JSON.stringify(eventPattern));
     try {
         switch(eventType) {
             case 'STATE_CHANGE':
@@ -62,6 +63,7 @@ async function buildEventPattern() {
         core.debug(JSON.stringify(eventPattern));
         core.setFailed(e.message);
     }
+    core.debug(JSON.stringify(eventPattern));
     return eventPattern;
 
 }
@@ -107,7 +109,7 @@ async function putRule(eventPattern: string) {
 }
 
 async function run() {
-    
+    core.info('running')
     try {
         const eventPattern = buildEventPattern();
         await putRule(JSON.stringify(eventPattern));
