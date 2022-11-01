@@ -107,6 +107,8 @@ async function run() {
     
     try {
         const eventPattern = buildEventPattern();
+        console.log(eventPattern);
+        console.log('hi');
         await putRule(JSON.stringify(eventPattern));
     } catch(e) {
         core.setFailed(e.message);

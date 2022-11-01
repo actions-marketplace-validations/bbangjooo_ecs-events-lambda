@@ -11,7 +11,7 @@ inputs:
     description: 'AWS region. The region of AWS ECS should be same as the one of AWS EventBridge.'
     required: true
   event-bus:
-    description: 'The event bus which this rule will be set'
+    description: 'The event bus which this rule will be set. Default is "default"'
     required: false
   clusters:
     description: "The names of the ECS service's cluster(optional). If you want to specify targeted clusters, give ARNs of cluster as array. Default is all clusters."
