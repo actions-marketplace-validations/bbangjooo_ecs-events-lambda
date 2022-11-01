@@ -49,12 +49,12 @@ const EVENT_CATEGORY = {
 function buildEventPattern() {
     return __awaiter(this, void 0, void 0, function* () {
         const clusters = core.getMultilineInput('clusters');
-        console.log(clusters);
         const eventType = core.getInput('event-type');
         const detailEventType = core.getMultilineInput('detail-event-type');
         let eventPattern = {
             source: ["aws.ecs"]
         };
+        core.debug(JSON.stringify(eventPattern));
         try {
             switch (eventType) {
                 case 'STATE_CHANGE':
@@ -91,8 +91,10 @@ function buildEventPattern() {
             }
         }
         catch (e) {
+            core.debug(JSON.stringify(eventPattern));
             core.setFailed(e.message);
         }
+        core.debug(JSON.stringify(eventPattern));
         return eventPattern;
     });
 }
@@ -122,26 +124,32 @@ function putRule(eventPattern) {
         const name =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('name');
         const decsription =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('decsription');
         const eventBus =  true && 'default' !== void 0 ? 'default' : core.getInput('event-bus');
-        const client = new client_eventbridge_1.EventBridgeClient({
-            region: REGION
-        });
-        const command = new client_eventbridge_1.PutRuleCommand({
-            Name: name,
-            Description: decsription,
-            EventBusName: eventBus,
-            EventPattern: eventPattern
-        });
-        const res = yield client.send(command);
-        console.log(res);
+        try {
+            const client = new client_eventbridge_1.EventBridgeClient({
+                region: REGION
+            });
+            const command = new client_eventbridge_1.PutRuleCommand({
+                Name: name,
+                Description: decsription,
+                EventBusName: eventBus,
+                EventPattern: eventPattern
+            });
+            const res = yield client.send(command);
+        }
+        catch (e) {
+            core.setFailed(e.message);
+        }
     });
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info('running');
         try {
             const eventPattern = buildEventPattern();
             yield putRule(JSON.stringify(eventPattern));
         }
         catch (e) {
+            core.debug('hi');
             core.setFailed(e.message);
         }
     });
