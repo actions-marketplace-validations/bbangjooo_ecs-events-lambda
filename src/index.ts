@@ -15,7 +15,7 @@ const EVENT_CATEGORY = {
     'STATE_CHANGE': ['ECS Task State Change', 'ECS Container Instance State Change', 'ECS Deployment State Change'],
 }
 
-async function buildEventPattern() {
+async function buildEventPattern(): Promise<TeventPattern> {
     core.info('building');
 
     const clusters: string[] = core.getMultilineInput('clusters');
@@ -60,10 +60,8 @@ async function buildEventPattern() {
                 break;
         }
     } catch(e) {
-        core.debug(JSON.stringify(eventPattern));
         core.setFailed(e.message);
     }
-    core.debug(JSON.stringify(eventPattern));
     return eventPattern;
 
 }
@@ -112,7 +110,7 @@ async function putRule(eventPattern: string) {
 async function run() {
     core.info('running')
     try {
-        const eventPattern = buildEventPattern();
+        const eventPattern = await buildEventPattern();
         core.info(JSON.stringify(eventPattern));
         await putRule(JSON.stringify(eventPattern));
     } catch(e) {
