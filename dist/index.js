@@ -48,6 +48,7 @@ const EVENT_CATEGORY = {
 };
 function buildEventPattern() {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info('building');
         const clusters = core.getMultilineInput('clusters');
         const eventType = core.getInput('event-type');
         const detailEventType = core.getMultilineInput('detail-event-type');
@@ -121,6 +122,7 @@ function getClusterArns(clusters) {
 }
 function putRule(eventPattern) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info('putting');
         const name =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('name');
         const decsription =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('decsription');
         const eventBus =  true && 'default' !== void 0 ? 'default' : core.getInput('event-bus');
@@ -146,6 +148,7 @@ function run() {
         core.info('running');
         try {
             const eventPattern = buildEventPattern();
+            core.info(JSON.stringify(eventPattern));
             yield putRule(JSON.stringify(eventPattern));
         }
         catch (e) {

@@ -16,6 +16,7 @@ const EVENT_CATEGORY = {
 }
 
 async function buildEventPattern() {
+    core.info('building');
 
     const clusters: string[] = core.getMultilineInput('clusters');
     const eventType: string = core.getInput('event-type');
@@ -87,6 +88,7 @@ async function getClusterArns(clusters: string[]): Promise<(string | undefined)[
 }
 
 async function putRule(eventPattern: string) {
+    core.info('putting')
     const name = 'test-rule-2' ?? core.getInput('name');
     const decsription = 'test-rule-2' ?? core.getInput('decsription');
     const eventBus = 'default' ?? core.getInput('event-bus');
@@ -111,6 +113,7 @@ async function run() {
     core.info('running')
     try {
         const eventPattern = buildEventPattern();
+        core.info(JSON.stringify(eventPattern));
         await putRule(JSON.stringify(eventPattern));
     } catch(e) {
         core.debug('hi');
