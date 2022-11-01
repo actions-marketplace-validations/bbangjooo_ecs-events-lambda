@@ -42,17 +42,16 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(42186));
 const client_eventbridge_1 = __nccwpck_require__(24947);
 const client_ecs_1 = __nccwpck_require__(18209);
-const REGION =  true && 'ap-northeast-2' !== void 0 ? 'ap-northeast-2' : core.getInput('region');
+const REGION = core.getInput('region');
 const EVENT_CATEGORY = {
     'STATE_CHANGE': ['ECS Task State Change', 'ECS Container Instance State Change', 'ECS Deployment State Change'],
 };
 function buildEventPattern() {
-    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        const clusters = (_a = []) !== null && _a !== void 0 ? _a : core.getMultilineInput('clusters');
+        const clusters = core.getMultilineInput('clusters');
         console.log(clusters);
-        const eventType =  true && '' !== void 0 ? '' : core.getInput('event-type');
-        const detailEventType = (_b = []) !== null && _b !== void 0 ? _b : core.getMultilineInput('detail-event-type');
+        const eventType = core.getInput('event-type');
+        const detailEventType = core.getMultilineInput('detail-event-type');
         let eventPattern = {
             source: ["aws.ecs"]
         };

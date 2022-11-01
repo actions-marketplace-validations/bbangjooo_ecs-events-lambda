@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "package": "ncc build --source-map --license licenses.txt",
-    "all": "npm run build && npm tun package"
+    "all": "npm run build && npm run package"
   },
   "author": "",
   "license": "ISC",
