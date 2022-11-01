@@ -19,7 +19,6 @@ const EVENT_CATEGORY = {
 async function buildEventPattern() {
 
     const clusters: string[] = core.getMultilineInput('clusters');
-    console.log(clusters);
     const eventType: string = core.getInput('event-type');
     const detailEventType: string[] = core.getMultilineInput('detail-event-type');
     let eventPattern: TeventPattern = {
@@ -62,7 +61,7 @@ async function buildEventPattern() {
     } catch(e) {
         core.setFailed(e.message);
     }
-    
+    console.log(eventPattern)
     return eventPattern;
 
 }
