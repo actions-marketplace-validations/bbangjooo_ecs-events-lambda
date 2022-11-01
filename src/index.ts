@@ -61,7 +61,7 @@ async function buildEventPattern() {
     } catch(e) {
         core.setFailed(e.message);
     }
-    core.info(eventPattern)
+    core.info(JSON.stringify(eventPattern));
     return eventPattern;
 
 }
@@ -100,10 +100,10 @@ async function putRule(eventPattern: string) {
         EventPattern: eventPattern
     });
     const res = await client.send(command);
-    core.info(res);
 }
 
 async function run() {
+    core.info('hi');
     
     try {
         const eventPattern = buildEventPattern();
