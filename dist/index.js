@@ -48,14 +48,12 @@ const EVENT_CATEGORY = {
 };
 function buildEventPattern() {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info('building');
         const clusters = core.getMultilineInput('clusters');
         const eventType = core.getInput('event-type');
         const detailEventType = core.getMultilineInput('detail-event-type');
         let eventPattern = {
             source: ["aws.ecs"]
         };
-        core.info(JSON.stringify(eventPattern));
         try {
             switch (eventType) {
                 case 'STATE_CHANGE':
@@ -120,7 +118,6 @@ function getClusterArns(clusters) {
 }
 function putRule(eventPattern) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info('putting');
         const name =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('name');
         const decsription =  true && 'test-rule-2' !== void 0 ? 'test-rule-2' : core.getInput('decsription');
         const eventBus =  true && 'default' !== void 0 ? 'default' : core.getInput('event-bus');
@@ -135,6 +132,7 @@ function putRule(eventPattern) {
                 EventPattern: eventPattern
             });
             const res = yield client.send(command);
+            core.info(JSON.stringify(res));
         }
         catch (e) {
             core.setFailed(e.message);
@@ -146,11 +144,9 @@ function run() {
         core.info('running');
         try {
             const eventPattern = yield buildEventPattern();
-            core.info(JSON.stringify(eventPattern));
             yield putRule(JSON.stringify(eventPattern));
         }
         catch (e) {
-            core.debug('hi');
             core.setFailed(e.message);
         }
     });
