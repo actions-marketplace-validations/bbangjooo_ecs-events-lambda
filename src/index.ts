@@ -108,60 +108,26 @@ async function putRule(eventPattern: string) {
     }
 }
 
-async function getLambdaRole(roleName: string): Promise<string> {
-    let role;
-    try {
-        const iam = new aws.IAM();
-        role = await iam.getRole({ RoleName: roleName }).promise();
-    } catch(e) {
-        core.setFailed(e.message);
-    }
-    return role.Role.Arn;
-
-}
-
-async function createLambdaFunction(zipFileName: string, funcName: string, roleName: string, handler: string, description: string, envs?: string[]) {
-    try { 
-        let params: aws.Lambda.Types.CreateFunctionRequest = {
-            Code: {
-                ZipFile: zipFileName
-            },
-            FunctionName: funcName,
-            Role: await getLambdaRole(roleName),
-            Handler: handler,
-            Runtime: 'nodejs14.x',
-            Description: description,
-        };
-        let envVariables: { 'Variables': { [key: string]: string} } = { 'Variables': {} }
-        if (envs) {
-            envs.map(e => {
-                const [ key, value ] = e.trim().split('=')
-                envVariables['Variables'][key] = value
-            });
-            params.Environment = envVariables;
-        }
-        const lambda = new aws.Lambda()
-        lambda.createFunction(params, (err, data) => {
-            if (err) core.setFailed(err);
-            else core.info('[*] Lambda function successsfully created');
-        })
-    } catch(e) {
-        core.setFailed(e.message);
-    }
-}
-
 async function getLambdaFunction(functionName: string) {
     const lambda = new aws.Lambda()
-    let foundFunc;
+    let functionArn: string = '';
     try { 
         const params: aws.Lambda.Types.GetFunctionRequest = {
             FunctionName: functionName
         }
-        const foundFunc = await lambda.getFunction(params).promise();
+        const foundFunc = await lambda.getFunction(params).promise()
+        if (foundFunc.Configuration) {
+            functionArn = foundFunc.Configuration?.FunctionArn;
+        }
+        
     } catch(e) {
         core.setFailed(e.message);
     }
-    return foundFunc.Configuration?.FunctionArn;
+    if (functionArn === '') {
+        core.setFailed('Function Not Found')
+    }
+    core.info(`[*] functionArn: ${functionArn}`);
+    return functionArn;
 }
 
 async function putTargets() {
