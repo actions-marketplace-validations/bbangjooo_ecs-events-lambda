@@ -1,6 +1,8 @@
 import * as core from '@actions/core';
 import { EventBridgeClient, PutRuleCommand } from '@aws-sdk/client-eventbridge';
 import { ECSClient, DescribeClustersCommand } from '@aws-sdk/client-ecs';
+import * as aws from 'aws-sdk';
+import { randomUUID } from 'crypto';
 
 type TeventPattern = {
     source: string[];
@@ -18,6 +20,7 @@ const EVENT_CATEGORY = {
 async function buildEventPattern(): Promise<TeventPattern> {
 
     const clusters: string[] = core.getMultilineInput('clusters');
+    core.info(String(clusters));
     const eventType: string = core.getInput('event-type');
     const detailEventType: string[] = core.getMultilineInput('detail-event-type');
     let eventPattern: TeventPattern = {
@@ -105,10 +108,87 @@ async function putRule(eventPattern: string) {
     }
 }
 
-async function run() {
+async function getLambdaRole(roleName: string): Promise<string> {
+    let role;
     try {
+        const iam = new aws.IAM();
+        role = await iam.getRole({ RoleName: roleName }).promise();
+    } catch(e) {
+        core.setFailed(e.message);
+    }
+    return role.Role.Arn;
+
+}
+
+async function createLambdaFunction(zipFileName: string, funcName: string, roleName: string, handler: string, description: string, envs?: string[]) {
+    try { 
+        let params: aws.Lambda.Types.CreateFunctionRequest = {
+            Code: {
+                ZipFile: zipFileName
+            },
+            FunctionName: funcName,
+            Role: await getLambdaRole(roleName),
+            Handler: handler,
+            Runtime: 'nodejs14.x',
+            Description: description,
+        };
+        let envVariables: { 'Variables': { [key: string]: string} } = { 'Variables': {} }
+        if (envs) {
+            envs.map(e => {
+                const [ key, value ] = e.trim().split('=')
+                envVariables['Variables'][key] = value
+            });
+            params.Environment = envVariables;
+        }
+        const lambda = new aws.Lambda()
+        lambda.createFunction(params, (err, data) => {
+            if (err) core.setFailed(err);
+            else core.info('[*] Lambda function successsfully created');
+        })
+    } catch(e) {
+        core.setFailed(e.message);
+    }
+}
+
+async function getLambdaFunction(functionName: string) {
+    const lambda = new aws.Lambda()
+    let foundFunc;
+    try { 
+        const params: aws.Lambda.Types.GetFunctionRequest = {
+            FunctionName: functionName
+        }
+        const foundFunc = await lambda.getFunction(params).promise();
+    } catch(e) {
+        core.setFailed(e.message);
+    }
+    return foundFunc.Configuration?.FunctionArn;
+}
+
+async function putTargets() {
+    const name = core.getInput('name');
+    const functionName = core.getInput('lambda-function-name');
+    try {
+        let params: aws.EventBridge.Types.PutTargetsRequest = {
+            Rule: name,
+            Targets: [
+                {
+                    Arn: await getLambdaFunction(functionName),
+                    Id: randomUUID()
+                }
+            ]
+        };
+        const eb = new aws.EventBridge()
+        await eb.putTargets(params).promise()
+    } catch(e) {
+        core.setFailed(e.message);
+    }
+}
+
+async function run() {
+   try {
         const eventPattern = await buildEventPattern();
         await putRule(JSON.stringify(eventPattern));
+        await putTargets();
     } catch(e) {
         core.setFailed(e.message);
     }

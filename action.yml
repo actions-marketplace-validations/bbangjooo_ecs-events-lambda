@@ -10,6 +10,9 @@ inputs:
   region:
     description: 'AWS region. The region of AWS ECS should be same as the one of AWS EventBridge.'
     required: true
+  lambda-function-name:
+    description: 'The name of listener lambda function'
+    required: true
   event-bus:
     description: 'The event bus which this rule will be set. Default is "default"'
     required: false
@@ -25,7 +28,7 @@ inputs:
   event-name:
     description: 'The event name of API Call through CloudTrail(optional).'
     required: false
-
+  
 outputs:
   rule:
     description: 'The arn of created rule'

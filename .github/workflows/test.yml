@@ -23,8 +23,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
       - uses: actions/checkout@v2
+
       - uses: ./
         with:
-          name: test-rule-3
+          name: test-rule-4
           description: rule for test 3
           region: ap-northeast-2
+          lambda-function-name: alardin-back-healthcheck-notions
+          clusters: |
+            EcsAlardinBackendCluter
+            default
