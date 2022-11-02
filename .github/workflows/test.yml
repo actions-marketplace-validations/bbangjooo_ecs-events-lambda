@@ -26,10 +26,11 @@ jobs:
 
       - uses: ./
         with:
-          name: test-rule-4
+          name: test-rule-5
           description: rule for test 3
           region: ap-northeast-2
           lambda-function-name: alardin-back-healthcheck-notion
+          event-type: STATE_CHANGE
           clusters: |
             EcsAlardinBackendCluter
             default

@@ -20,7 +20,6 @@ const EVENT_CATEGORY = {
 async function buildEventPattern(): Promise<TeventPattern> {
 
     const clusters: string[] = core.getMultilineInput('clusters');
-    core.info(String(clusters));
     const eventType: string = core.getInput('event-type');
     const detailEventType: string[] = core.getMultilineInput('detail-event-type');
     let eventPattern: TeventPattern = {
@@ -63,6 +62,8 @@ async function buildEventPattern(): Promise<TeventPattern> {
     } catch(e) {
         core.setFailed(e.message);
     }
+    core.info('[*] EventPattern');
+    core.info(JSON.stringify(eventPattern));
     return eventPattern;
 
 }
@@ -101,8 +102,8 @@ async function putRule(eventPattern: string) {
             EventBusName: eventBus === '' ? 'default' : eventBus,
             EventPattern: eventPattern
         });
-        const res = await client.send(command);
-        core.info(JSON.stringify(res));
+        await client.send(command);
+        core.info('[+] Successfully create a rule');
     } catch(e) {
         core.setFailed(e.message);
     }
@@ -123,10 +124,6 @@ async function getLambdaFunction(functionName: string) {
     } catch(e) {
         core.setFailed(e.message);
     }
-    if (functionArn === '') {
-        core.setFailed('Function Not Found')
-    }
-    core.info(`[*] functionArn: ${functionArn}`);
     return functionArn;
 }
 
@@ -143,8 +140,9 @@ async function putTargets() {
                 }
             ]
         };
-        const eb = new aws.EventBridge()
-        await eb.putTargets(params).promise()
+        const eb = new aws.EventBridge();
+        await eb.putTargets(params).promise();
+        core.info('[+] Successfully link target to the rule');
     } catch(e) {
         core.setFailed(e.message);
     }
