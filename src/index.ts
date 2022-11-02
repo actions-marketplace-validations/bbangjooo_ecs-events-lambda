@@ -106,7 +106,8 @@ async function putRule(eventPattern: string) {
             EventBusName: eventBus === '' ? 'default' : eventBus,
             EventPattern: eventPattern
         });
-        await client.send(command);
+        const res = await client.send(command);
+        core.info(JSON.stringify(res));
         core.info('[+] Successfully create a rule');
     } catch(e) {
         core.setFailed(e.message);
