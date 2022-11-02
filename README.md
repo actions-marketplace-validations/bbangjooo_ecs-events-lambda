@@ -6,19 +6,19 @@
 - name: Configure AWS Credentials
   uses: aws-actions/configure-aws-credentials@v1
   with:
-  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  aws-region: ap-northeast-2
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-region: ap-northeast-2
 
 - uses: bbangjooo/ecs-events-lambda@v1
-	with:
+  with:
     name: rule-name
     description: rule-description
     region: ap-northeast-2
     lambda-function-name: lambda function name wanted to be listen to the event rule
     event-type: STATE_CHANGE 
     clusters: | 
-    	EcsAlardinBackendCluter
+      EcsAlardinBackendCluter
 ```
 
 Use this action to connect AWS ECS clusters to lambda function using [AWS EventBridge](https://aws.amazon.com/ko/eventbridge/). General workflow is like:
