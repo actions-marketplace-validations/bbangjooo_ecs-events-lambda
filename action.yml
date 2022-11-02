@@ -1,5 +1,5 @@
-name: 'register-eb-lambda-action'
-description: 'register Lambda function listening to ECS events and EventBridge to connect lambda functions and ecs clusters'
+name: 'ecs-events-lambda'
+description: 'Integrate AWS ECS service and Lambda listener function using AWS EventBridge.'
 inputs:
   name:
     description: 'The name of the event rule'
