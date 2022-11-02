@@ -50,7 +50,7 @@ async function buildEventPattern(): Promise<TeventPattern> {
                     }
                 }
                 break;
-            case 'CloudTrail_API_CALL':
+            case 'CLOUDTRAIL_API_CALL':
                 eventPattern['detail-type'] = ["AWS API Call via CloudTrail"]
                 eventPattern['detail'] = {
                     eventSource: ["ecs.amazonaws.com"],
@@ -67,7 +67,6 @@ async function buildEventPattern(): Promise<TeventPattern> {
         core.setFailed(e.message);
     }
     core.info('[*] EventPattern');
-    core.info(JSON.stringify(eventPattern));
     return eventPattern;
 
 }
