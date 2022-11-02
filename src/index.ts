@@ -49,13 +49,17 @@ async function buildEventPattern(): Promise<TeventPattern> {
                         clusterArn: await getClusterArns(clusters)
                     }
                 }
+                break;
             case 'CloudTrail_API_CALL':
                 eventPattern['detail-type'] = ["AWS API Call via CloudTrail"]
-                const eventName = core.getInput('event-name');
                 eventPattern['detail'] = {
                     eventSource: ["ecs.amazonaws.com"],
-                    eventName: [eventName]
                 }
+                const eventName = core.getInput('event-name');
+                if (eventName.length > 0) {
+                    eventPattern['detail']['eventName'] = [eventName];
+                }
+                break;
             default:
                 break;
         }
