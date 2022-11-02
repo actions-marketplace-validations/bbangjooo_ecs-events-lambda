@@ -30,7 +30,7 @@ inputs:
     required: false
   
 outputs:
-  rule:
+  rule-arn:
     description: 'The arn of created rule'
 
 runs:

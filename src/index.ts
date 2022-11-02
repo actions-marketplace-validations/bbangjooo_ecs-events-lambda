@@ -107,7 +107,7 @@ async function putRule(eventPattern: string) {
         });
         const res = await client.send(command);
         core.info('[+] Successfully create a rule');
-        core.info(JSON.stringify(res));
+        return res.RuleArn;
     } catch(e) {
         core.setFailed(e.message);
     }
@@ -155,8 +155,9 @@ async function putTargets() {
 async function run() {
    try {
         const eventPattern = await buildEventPattern();
-        await putRule(JSON.stringify(eventPattern));
+        const ruleArn = await putRule(JSON.stringify(eventPattern));
         await putTargets();
+        core.setOutput('rule-arn', ruleArn);
     } catch(e) {
         core.setFailed(e.message);
     }
